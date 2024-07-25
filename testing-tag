@@ -1,42 +1,49 @@
 import requests
 from packaging import version
-
-def get_image_name(repository_url):
-    """
-    Fetches the name of the sole image from the JFrog Artifactory repository.
-    """
-    url = f"{repository_url}/_catalog"
-    response = requests.get(url, auth=('your-username', 'your-password'))
-    if response.status_code == 200:
-        images = response.json()['repositories']
-        if images:
-            return images[0]  # Return the first and only image name
-        else:
-            raise Exception("No images found in the repository.")
-    else:
-        raise Exception(f"Failed to fetch image names: {response.status_code} - {response.text}")
+import yaml
 
 def get_latest_tag(repository_url, image_name):
     """
     Fetches the latest tag for the given image from the JFrog Artifactory repository based on semantic versioning.
     """
-    url = f"{repository_url}/{image_name}/tags/list"
+    url = f"{repository_url}/{repository_name}/{image_name}/tags/list"
     response = requests.get(url, auth=('your-username', 'your-password'))
     if response.status_code == 200:
         tags = response.json()['tags']
-        # Parse each tag and find the maximum based on semantic versioning
         latest_tag = max(version.parse(tag) for tag in tags)
         return str(latest_tag)
     else:
         raise Exception(f"Failed to fetch tags: {response.status_code} - {response.text}")
 
+def update_deployment_yaml(file_path, image_name, new_tag):
+    """
+    Updates the deployment.yaml file with the new image tag.
+    """
+    with open(file_path, 'r') as file:
+        data = yaml.safe_load(file)
+    
+    # Assuming the image is located under spec -> containers -> image
+    # This path might need to be adjusted based on your specific yaml structure
+    if 'spec' in data and 'containers' in data['spec']:
+        for container in data['spec']['containers']:
+            if image_name in container['image']:
+                container['image'] = f"{image_name}:{new_tag}"
+                break
+    
+    with open(file_path, 'w') as file:
+        yaml.safe_dump(data, file)
+
 if __name__ == "__main__":
     # Configuration
     repository_url = "https://your-jfrog-instance/artifactory/api/docker/your-repo-name/v2"
-
-    # Dynamically fetch the image name from the repository
-    image_name = get_image_name(repository_url)
+    repository_name = "test-repo"
+    image_name = "pythonapp"
+    deployment_file_path = 'path/to/your/deployment.yaml'
 
     # Fetch the latest tag for the specified image
     latest_tag = get_latest_tag(repository_url, image_name)
     print(f"The latest tag for {image_name} is {latest_tag}")
+
+    # Update the deployment.yaml file
+    update_deployment_yaml(deployment_file_path, image_name, latest_tag)
+    print(f"Updated deployment.yaml with the image {image_name}:{latest_tag}")
