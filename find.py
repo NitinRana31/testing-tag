@@ -34,11 +34,7 @@ def main():
        return
    print(f"Dockerfile found at: {dockerfile_path}")
    # Define the content of the pip.conf file with the provided content
-   pip_conf_content = """
-[global]
-index-url =
-https://username:password@artifactrepository.citigroup.net/artifactory/api/pypi/pypi-dev/simple
-"""
+   pip_conf_content = "[global]\nindex-url=https://username:password@artifactrepository.citigroup.net/artifactory/api/pypi/pypi-dev/simple\n"
    pip_conf_path = os.path.join(os.path.dirname(dockerfile_path), "pip.conf")
    # Write pip.conf content to the file
    with open(pip_conf_path, "w") as f:
