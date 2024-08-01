@@ -16,6 +16,7 @@ def insert_after_from(dockerfile_path, insert_content):
            new_lines.append(insert_content)
    with open(dockerfile_path, "w") as file:
        file.writelines(new_lines)
+
 def main():
    # Define the base directory starting with "output"
    base_path = None
@@ -41,7 +42,15 @@ def main():
        f.write(pip_conf_content)
    print(f"pip.conf file has been placed at: {pip_conf_path}")
    # Content to insert after FROM command
-   insert_content = "\n# Set up pip configuration\nWORKDIR /root/.pip\nCOPY pip.conf ./\n"
+   insert_content = (
+       "\n# Set up pip configuration\n"
+       "WORKDIR /root/.pip\n"
+       "COPY pip.conf ./\n"
+       "# Switch to root user\n"
+       "USER root\n"
+       "# Set the final user\n"
+       "USER 1001\n"
+   )
    # Insert commands after FROM in the Dockerfile
    insert_after_from(dockerfile_path, insert_content)
    print(f"Updated Dockerfile at: {dockerfile_path}")
