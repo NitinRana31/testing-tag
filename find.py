@@ -4,6 +4,7 @@ def find_dockerfile(base_path):
        if "Dockerfile" in files and "src" in root.split(os.sep):
            return os.path.join(root, "Dockerfile")
    return None
+
 def insert_after_from(dockerfile_path, insert_content):
    with open(dockerfile_path, "r") as file:
        lines = file.readlines()
@@ -17,6 +18,20 @@ def insert_after_from(dockerfile_path, insert_content):
    with open(dockerfile_path, "w") as file:
        file.writelines(new_lines)
 
+def replace_pip_install(dockerfile_path):
+   # Read the Dockerfile content
+   with open(dockerfile_path, "r") as file:
+       lines = file.readlines()
+   # Define the new pip install command
+   new_pip_install = "RUN pip install --no-cache-dir -r requirements.txt\n"
+   # Replace existing pip install command
+   with open(dockerfile_path, "w") as file:
+       for line in lines:
+           if "pip install -r requirements.txt" in line:
+               # Replace the line with the new command
+               file.write(new_pip_install)
+           else:
+               file.write(line)
 def main():
    # Define the base directory starting with "output"
    base_path = None
@@ -48,11 +63,15 @@ def main():
        "COPY pip.conf ./\n"
        "# Switch to root user\n"
        "USER root\n"
-       "# Set the final user\n"
-       "USER 1001\n"
    )
    # Insert commands after FROM in the Dockerfile
    insert_after_from(dockerfile_path, insert_content)
+   print(f"Updated Dockerfile at: {dockerfile_path}")
+   # Replace existing pip install command with new one
+   replace_pip_install(dockerfile_path)
+   # Add the USER 1001 command to ensure non-root operation
+   with open(dockerfile_path, "a") as file:
+       file.write("# Set the final user\nUSER 1001\n")
    print(f"Updated Dockerfile at: {dockerfile_path}")
 if __name__ == "__main__":
    main()
