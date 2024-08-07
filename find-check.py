@@ -5,7 +5,8 @@ import stat
 def find_dockerfiles(base_path):
     dockerfiles = []
     for root, dirs, files in os.walk(base_path):
-        if "src" in root:
+        # Check if the current path starts with 'output' and contains 'source'
+        if 'output' in root.split(os.sep) and 'source' in root.split(os.sep):
             for file in files:
                 if file == "Dockerfile":
                     dockerfiles.append(os.path.join(root, file))
@@ -71,12 +72,15 @@ def modify_java_dockerfile(dockerfile_path):
                 continue  # Remove this line
             if line.startswith("RUN ./mvnw dependency:go-offline"):
                 continue  # Remove this line
+            if line.startswith("RUN mvn wrapper:wrapper"):
+                continue    
             if line.startswith("RUN ./mvnw clean package"):
                 if "-s settings.xml" not in line:
                     line = line.replace("./mvnw clean package", "mvn clean package -s settings.xml")
             file.write(line)
             if not inserted and line.startswith("WORKDIR"):
                 file.write("COPY settings.xml .\n")
+                file.write("RUN cat /app/settings.xml\n")  # Add the cat command here
                 inserted = True
 
 def process_dockerfile(dockerfile_path):
