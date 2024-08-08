@@ -1,7 +1,8 @@
 import os
 import shutil
-import subprocess
 import stat
+import subprocess
+
 def find_dockerfiles(base_path):
    dockerfiles = []
    for root, dirs, files in os.walk(base_path):
@@ -10,12 +11,14 @@ def find_dockerfiles(base_path):
                if file == "Dockerfile":
                    dockerfiles.append(os.path.join(root, file))
    return dockerfiles
+
 def find_pom_directories(base_path):
    pom_directories = []
    for root, dirs, files in os.walk(base_path):
        if 'pom.xml' in files:
            pom_directories.append(root)
    return pom_directories
+
 def insert_after_from(dockerfile_path, insert_content):
    with open(dockerfile_path, "r") as file:
        lines = file.readlines()
@@ -24,6 +27,7 @@ def insert_after_from(dockerfile_path, insert_content):
            file.write(line)
            if line.startswith("FROM"):
                file.write(insert_content)
+
 def replace_pip_install(dockerfile_path):
    with open(dockerfile_path, "r") as file:
        lines = file.readlines()
@@ -34,6 +38,7 @@ def replace_pip_install(dockerfile_path):
                file.write(new_pip_install)
            else:
                file.write(line)
+               
 def make_mvnw_executable(dockerfile_directory):
    mvnw_path = os.path.join(dockerfile_directory, "mvnw")
    if os.path.exists(mvnw_path):
@@ -42,6 +47,7 @@ def make_mvnw_executable(dockerfile_directory):
        print(f"Made {mvnw_path} executable.")
    else:
        print(f"No mvnw file found at {mvnw_path}.")
+
 def determine_application_type(dockerfile_path):
    with open(dockerfile_path, "r") as file:
        content = file.read()
@@ -50,6 +56,7 @@ def determine_application_type(dockerfile_path):
        elif "mvn" in content or "java" in content:
            return "java"
    return "unknown"
+
 def process_dockerfile(dockerfile_path):
    dockerfile_directory = os.path.dirname(dockerfile_path)
    app_type = determine_application_type(dockerfile_path)
@@ -77,6 +84,7 @@ def process_dockerfile(dockerfile_path):
        make_mvnw_executable(dockerfile_directory)
    else:
        print("Unknown application type. No changes made.")
+
 def copy_settings_xml_to_pom_directories(base_path):
    settings_xml_source = os.path.join(os.path.dirname(base_path), "settings.xml")
    if not os.path.exists(settings_xml_source):
@@ -89,26 +97,17 @@ def copy_settings_xml_to_pom_directories(base_path):
        print(f"Copied settings.xml to {settings_xml_destination}")
        # Run the mvn clean package -s settings.xml command
        try:
-           print(f"Running mvn clean package -s settings.xml in {pom_directory}")
-           result = subprocess.run(
-               ['mvn', '--version'],
-               stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True, shell=True
-           )
-           print(f"Maven version: {result.stdout}")
-           # Run the actual Maven command
-           result = subprocess.run(
-               ['mvn', 'clean', 'package', '-s', 'settings.xml'],
-               cwd=pom_directory,
-               stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True, shell=True
-           )
+           print(f"Running mvn clean package in {pom_directory}")
+        #    result = subprocess.run(["mvn", "--version"], capture_output=True, text=True)
+        #    print(f"Maven version: {result.stdout}")
+           result = subprocess.run(["mvn", "clean", "package", "-s", "settings.xml"], cwd=pom_directory, capture_output=True, text=True)
            if result.returncode == 0:
                print(f"Successfully ran mvn clean package in {pom_directory}")
-               print(result.stdout)
            else:
-               print(f"Error running mvn clean package in {pom_directory}")
-               print(result.stderr)
+               print(f"Failed to run mvn clean package in {pom_directory}. Error: {result.stderr}")
        except Exception as e:
            print(f"Exception occurred while running mvn clean package in {pom_directory}: {e}")
+           
 def main():
    global base_path
    base_path = None
