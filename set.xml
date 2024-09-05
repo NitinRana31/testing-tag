@@ -1,0 +1,253 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<settings xmlns="http://maven.apache.org/SETTINGS/1.1.0"
+
+          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+
+          xsi:schemaLocation="http://maven.apache.org/SETTINGS/1.1.0 http://maven.apache.org/xsd/settings-1.1.0.xsd">
+
+
+
+    <servers>
+
+        <server>
+
+            <id>central</id>
+
+            <username>nr05303</username>
+
+            <password>Moonset@11089</password>
+
+        </server>
+
+        <server>
+
+            <id>snapshots</id>
+
+            <username>nr05303</username>
+
+            <password>Moonset@11089</password>
+
+        </server>
+
+        <server>
+
+            <id>enterprise</id>
+
+            <username>nr05303</username>
+
+            <password>Moonset@11089</password>
+
+        </server>
+
+        <server>
+
+            <id>maven-gcg-enterprise-local</id>
+
+            <username>nr05303</username>
+
+            <password>Moonset@11089</password>
+
+        </server>
+
+        <server>
+
+            <id>cto-dev-manual</id>
+
+            <username>nr05303</username>
+
+            <password>Moonset@11089</password>
+
+        </server>
+
+    </servers>
+
+
+
+    <mirrors>
+
+        <mirror>
+
+            <id>snapshots</id>
+
+            <mirrorOf>*</mirrorOf>
+
+            <name>maven-gcg-dev</name>
+
+            <url>https://www.artifactrepository.citigroup.net:443/artifactory/maven-gcg-dev</url>
+
+        </mirror>
+
+        <mirror>
+
+            <id>maven-gcg-enterprise-local</id>
+
+            <mirrorOf>maven-gcg-enterprise-local</mirrorOf>
+
+            <name>maven-gcg-enterprise-local</name>
+
+            <url>https://artifactrepository.citigroup.net/artifactory/maven-gcg-enterprise-local</url>
+
+        </mirror>
+
+        <mirror>
+
+            <id>enterprise</id>
+
+            <mirrorOf>enterprise</mirrorOf>
+
+            <name>maven-cto-prod-local</name>
+
+            <url>https://www.artifactrepository.citigroup.net:443/artifactory/maven-cto-enterprise-local</url>
+
+        </mirror>
+
+        <mirror>
+
+            <id>cto-dev-manual</id>
+
+            <mirrorOf>cto-dev-manual</mirrorOf>
+
+            <name>maven-cto-dev-manual</name>
+
+            <url>https://artifactrepository.citigroup.net/artifactory/maven-cto-dev-manual-local</url>
+
+        </mirror>
+
+    </mirrors>
+
+
+
+    <profiles>
+
+        <profile>
+
+            <id>artifactory</id>
+
+            <repositories>
+
+                <repository>
+
+                    <id>central</id>
+
+                    <name>maven-gcg-prod</name>
+
+                    <url>https://www.artifactrepository.citigroup.net:443/artifactory/maven-gcg-prod</url>
+
+                    <snapshots>
+
+                        <enabled>false</enabled>
+
+                    </snapshots>
+
+                </repository>
+
+                <repository>
+
+                    <id>snapshots</id>
+
+                    <name>maven-gcg-dev</name>
+
+                    <url>https://www.artifactrepository.citigroup.net:443/artifactory/maven-gcg-dev</url>
+
+                    <snapshots />
+
+                </repository>
+
+                <repository>
+
+                    <id>maven-gcg-enterprise-local</id>
+
+                    <name>maven-gcg-enterprise-local</name>
+
+                    <url>https://artifactrepository.citigroup.net/artifactory/maven-gcg-enterprise-local/</url>
+
+                    <snapshots />
+
+                </repository>
+
+                <repository>
+
+                    <id>enterprise</id>
+
+                    <name>maven-cto-prod-local</name>
+
+                    <url>https://www.artifactrepository.citigroup.net/artifactory/maven-cto-enterprise-local/</url>
+
+                    <snapshots />
+
+                </repository>
+
+                <repository>
+
+                    <id>cto-dev-manual</id>
+
+                    <name>cto-dev-manual</name>
+
+                    <url>https://artifactrepository.citigroup.net/artifactory/maven-cto-dev-manual-local/</url>
+
+                    <snapshots />
+
+                </repository>
+
+            </repositories>
+
+            <pluginRepositories>
+
+                <pluginRepository>
+
+                    <id>central</id>
+
+                    <name>maven-gcg-prod</name>
+
+                    <url>https://www.artifactrepository.citigroup.net:443/artifactory/maven-gcg-prod</url>
+
+                    <snapshots>
+
+                        <enabled>false</enabled>
+
+                    </snapshots>
+
+                </pluginRepository>
+
+                <pluginRepository>
+
+                    <id>snapshots</id>
+
+                    <name>maven-gcg-enterprise-local</name>
+
+                    <url>https://www.artifactrepository.citigroup.net:443/artifactory/maven-gcg-enterprise-local</url>
+
+                    <snapshots />
+
+                </pluginRepository>
+
+                <pluginRepository>
+
+                    <id>snapshots</id>
+
+                    <name>maven-gcg-dev</name>
+
+                    <url>https://www.artifactrepository.citigroup.net:443/artifactory/maven-gcg-dev</url>
+
+                    <snapshots />
+
+                </pluginRepository>
+
+            </pluginRepositories>
+
+        </profile>
+
+    </profiles>
+
+
+
+    <activeProfiles>
+
+        <activeProfile>artifactory</activeProfile>
+
+    </activeProfiles>
+
+
+
+</settings>
